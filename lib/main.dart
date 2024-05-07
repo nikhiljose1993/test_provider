@@ -37,7 +37,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<Counter>(context);
+    // final provider = Provider.of<Counter>(context);
     //whole build method rebuild every time state gets updated.
     print('build method rebuilding');
     return Scaffold(
@@ -53,7 +53,8 @@ class _MyHomePageState extends State<MyHomePage> {
               'You have pushed the button this many times:',
             ),
             Text(
-              '${provider.count}',
+              // '${provider.count}',
+              '${context.watch<Counter>().count}',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
