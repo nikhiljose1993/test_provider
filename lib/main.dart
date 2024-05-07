@@ -37,26 +37,19 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    // final provider = Provider.of<Counter>(context);
-    //whole build method rebuild every time state gets updated.
-    print('build method rebuilding');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
+            Text(
               'You have pushed the button this many times:',
             ),
-            Text(
-              // '${provider.count}',
-              '${context.watch<Counter>().count}',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            CountWidget(),
           ],
         ),
       ),
@@ -67,6 +60,23 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
+    );
+  }
+}
+
+class CountWidget extends StatelessWidget {
+  const CountWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    //only this single widget get rebuild every time state gets updated.
+    print('build method rebuilding');
+
+    // final provider = Provider.of<Counter>(context);
+    return Text(
+      // '${provider.count},'
+      '${context.watch<Counter>().count}',
+      style: Theme.of(context).textTheme.headlineMedium,
     );
   }
 }
