@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test_provider/counter.dart';
+import 'package:test_provider/counter_provider.dart';
+import 'package:test_provider/products_provider.dart';
 
 void main() {
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(
-      create: (_) => Counter(),
-    )
-  ], child: const MyApp()));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<CounterProvider>(
+          create: (_) => CounterProvider(),
+        ),
+        ChangeNotifierProvider<ProductProvider>(
+          create: (_) => ProductProvider()..fetch(),
+        )
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -49,13 +58,16 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               'You have pushed the button this many times:',
             ),
-            CountWidget(),
+            SizedBox(
+              height: 300,
+              child: CountWidget(),
+            ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.read<Counter>().incrementCounter();
+          context.read<CounterProvider>().incrementCounter();
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
@@ -69,14 +81,28 @@ class CountWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //only this single widget get rebuild every time state gets updated.
-    print('build method rebuilding');
-
-    // final provider = Provider.of<Counter>(context);
-    return Text(
-      // '${provider.count},'
-      '${context.watch<Counter>().count}',
-      style: Theme.of(context).textTheme.headlineMedium,
-    );
+    final provider = Provider.of<ProductProvider>(context);
+    return provider.plist!.isNotEmpty
+        ? ListView.builder(
+            itemCount: provider.plist!.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: NetworkImage(
+                    '${provider.plist![index].thumbnail}',
+                  ),
+                ),
+                title: Text(
+                  '${provider.plist![index].title}',
+                ),
+                subtitle: Text(
+                  '${provider.plist![index].price}',
+                ),
+              );
+            },
+          )
+        : const Center(
+            child: CircularProgressIndicator(),
+          );
   }
 }
