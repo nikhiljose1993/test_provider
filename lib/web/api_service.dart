@@ -1,16 +1,24 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:test_provider/models/RespMain.dart';
-import 'package:test_provider/models/Products.dart';
+import 'package:test_provider/models/resp_main.dart';
+import 'package:test_provider/models/products.dart';
 
 class ApiService {
+  ApiService._internal(); //private constructor
+
+  static final ApiService _singleton = ApiService._internal();
+
+  factory ApiService() {
+    return _singleton;
+  }
+
   Future<List<Products>?> fetchData() async {
-    var response = await http.get(
+    final response = await http.get(
       Uri.parse('https://dummyjson.com/products'),
     );
-    var jsonn = jsonDecode(response.body);
-    var res = RespMain.fromJson(jsonn);
-    var list = res.products;
+    final jsonn = jsonDecode(response.body);
+    final res = RespMain.fromJson(jsonn);
+    final list = res.products;
     return list;
   }
 }
